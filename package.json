@@ -1,0 +1,33 @@
+{
+  "name": "web-chat-bd3",
+  "version": "1.0.0",
+  "description": "Um webchat simples para demonstração do uso do MongoDB.",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mirimons/web-chat-bd3.git"
+  },
+  "keywords": [
+    "mongodb",
+    "bd3",
+    "chat",
+    "web"
+  ],
+  "author": "Miriã Souza",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Mirimons/web-chat-bd3/issues"
+  },
+  "homepage": "https://github.com/Mirimons/web-chat-bd3#readme",
+  "dependencies": {
+    "ejs": "^3.1.10",
+    "express": "^5.1.0",
+    "socket.io": "^4.8.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}
