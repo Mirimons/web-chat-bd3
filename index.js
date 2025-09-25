@@ -22,7 +22,7 @@ app.use('/', (request, response) => {
 //função pra conectar com o banco
 function connectDB() {
 
-  let dbUrl = 'mongodb+srv://mirimons:Miri2206@cluster0.odqjau9.mongodb.net/'
+  let dbUrl = ''
 
   mongoose.connect(dbUrl);
 
