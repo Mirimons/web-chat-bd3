@@ -9,65 +9,73 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIO(server);
 
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, "public"))); //'__dirname' tudo que está atrás da raiz do projeto
 
 app.set("views", path.join(__dirname, "public"));
 
-app.engine("html", ejs.renderFile);
+app.engine('html', ejs.renderFile);
 
-app.use("/", (req, res) => {
-  res.render("index.html");
+app.use('/', (request, response) => {
+  response.render('index.html');
 });
 
+//função pra conectar com o banco
 function connectDB() {
-  let dbUrl = "mongodb+srv://mirimons:Miri2206@cluster0.odqjau9.mongodb.net/";
+
+  let dbUrl = 'mongodb+srv://mirimons:Miri2206@cluster0.odqjau9.mongodb.net/'
 
   mongoose.connect(dbUrl);
 
-  mongoose.connection.on('error', console.error.bind(console, 'connection error: '));
+  mongoose.connection.on('error', console.error.bind(console, 'connection error:'));
 
-  mongoose.connection.once('open', function callBack(){console.log('Conectou XD!')})
+  mongoose.connection.once('open', function callBack() {
+    console.log("Conectadooo!")
+  });
+
 }
 
 let messages = [];
 
 connectDB();
 
-let Message = mongoose.model('Message', {usuario: String, data_hora: String, mensagem: String});
+//nome de model tem que começar com letra maiúscula e tem que ser asicrono
+let Message = mongoose.model('Message', { usuario: String, dataHora: String, mensagem: String });
 
-Message.find({})
-  .then(docs => {
-    console.log('DOCS: ' + docs);
+Message.find({}) //find sem critérios
+  .then(docs => { //async function
+    console.log('DOCS:' + docs);
     messages = docs;
-    console.log('MESSAGES: ' + messages);
+    console.log('Messages:' + messages);
   }).catch(error => {
-    console.log('ERRO: ' + error);
+    console.log('ERRO:' + error);
   });
 
-io.on("connection", (socket) => {
-  console.log("ID de usuário conectado: " + socket.id);
-  
-  socket.emit("previousMessage", messages);
-  
-  socket.on("sendMessage", data => {
-    //entrada de mensagens: de cima pra baixo, fazendo a pilha: a última mensagem que entra é a primeira que sai 
+io.on("connection", socket => {
 
-    // messages.push(data);
-    // socket.broadcast.emit("receivedMessage", data);
+  console.log("ID de usuário conectado: " + socket.id) //pra ligar o socketIO
+
+  socket.emit("previousMessage", messages); //emite as mensagens
+
+  socket.on("sendMessage", data => {
+
+    //messages.push(data); --> posição de fila ou pilha => o último que entra é o primeiro que sai
 
     let message = new Message(data);
-    
-//Toda vez que chama um método de model, ele é assíncrono => bate no banco e volta, 
-//o código tem que esperar essa resposta de milissegundos (se encurta esta resposta com o uso do .then)
+
+    //socket.broadcast.emit("receivedMessage", data);
+
     message.save()
       .then(
         socket.broadcast.emit('receivedMessage', data)
       ).catch(error => {
-        console.log('Erro ' + error);
+        console.log('ERRO:' + error)
       })
+
   });
+
 });
 
+
 server.listen(3000, () => {
-  console.log("SERVIDOR RODANDO EM: http://localhost:3000");
+  console.log("SERVIDOR RODANDO EM - http://localhost:3000");
 });

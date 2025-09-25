@@ -43,22 +43,22 @@
 
     <script>
 
-        const socket = io('http://localhost:3000');
+        const socket = io("http://localhost:3000")
 
         function renderMessage(message) {
-            $('.messages').append('<div class="message"><strong>'
-                + message.usuario + message.data_hora + '</strong>: ' + message.mensagem + '</div>');
+            $('.messages').append('<div class="message"><strong>' //.apend adiciona o conteúdo no final
+                + message.usuario + message.dataHora + '</strong>: ' + message.mensagem + '</div>');
         }
 
         socket.on('previousMessage', function (messages) {
             for (message of messages) {
                 renderMessage(message);
             }
-        });
+        }); //todas as mensagens
 
         socket.on('receivedMessage', function (message) {
             renderMessage(message);
-        });
+        }); //mensagens da vez
 
         $('#chat').submit(function (event) {
 
@@ -77,15 +77,12 @@
                 let data_hora_obj = new Date();
 
 
-                let data_hora_msg = `
-                                        [${data_hora_obj.getDate()}/${data_hora_obj.getMonth()}/
-                                        ${data_hora_obj.getFullYear()}-${data_hora_obj.getHours()}:
-                                        ${data_hora_obj.getMinutes()}:${data_hora_obj.getSeconds()}]`;
+                let data_hora_msg = `[${data_hora_obj.getDate()}/${data_hora_obj.getMonth()}/${data_hora_obj.getFullYear()}-${data_hora_obj.getHours()}:${data_hora_obj.getMinutes()}:${data_hora_obj.getSeconds()}]`;
 
 
                 var messageObject = {
                     usuario: author,
-                    data_hora: data_hora_msg,
+                    dataHora: data_hora_msg,
                     mensagem: message,
                 };
 
@@ -93,6 +90,7 @@
 
                 socket.emit('sendMessage', messageObject);
             }
+
 
         });
 
